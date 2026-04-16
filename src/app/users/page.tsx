@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Plus, Trash2, UserCog } from "lucide-react";
+import { RoleGate } from "@/components/role-gate";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,16 +27,11 @@ import type { AdminUser, CreateUser, UserRole } from "@/lib/types";
 import { toast } from "sonner";
 
 export default function UsersPage() {
-  const { adminUser } = useAuth();
-  const router = useRouter();
-
-  // Redirect non-super-admins
-  if (adminUser?.role !== "super_admin") {
-    router.replace("/");
-    return null;
-  }
-
-  return <UsersContent />;
+  return (
+    <RoleGate role="super_admin">
+      <UsersContent />
+    </RoleGate>
+  );
 }
 
 function UsersContent() {
