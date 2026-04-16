@@ -42,16 +42,37 @@ function getIngestUrl(): string {
   return process.env.NEXT_PUBLIC_INGEST_URL || getApiUrl();
 }
 
+async function fetchWithAuthRefresh(url: string, options: RequestInit): Promise<Response> {
+  const baseHeaders = (options.headers as Record<string, string>) || {};
+  let res = await fetch(url, {
+    ...options,
+    headers: { ...(await getAuthHeader()), ...baseHeaders },
+  });
+
+  if (res.status === 401 && typeof window !== "undefined" && getFirebaseAuth().currentUser) {
+    res = await fetch(url, {
+      ...options,
+      headers: { ...(await getAuthHeader(true)), ...baseHeaders },
+    });
+    if (res.status === 401) {
+      try {
+        await getFirebaseAuth().signOut();
+      } catch {
+        // ignore signOut errors — redirect still happens
+      }
+      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+        window.location.assign("/login");
+      }
+    }
+  }
+
+  return res;
+}
+
 async function ingestRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
   const apiUrl = getIngestUrl();
   const url = `${apiUrl}${path}`;
-  const authHeader = await getAuthHeader();
-  const headers: Record<string, string> = {
-    ...authHeader,
-    ...((options.headers as Record<string, string>) || {}),
-  };
-
-  const res = await fetch(url, { ...options, headers });
+  const res = await fetchWithAuthRefresh(url, options);
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
@@ -62,35 +83,18 @@ async function ingestRequest<T>(path: string, options: RequestInit = {}): Promis
   return res.json();
 }
 
-async function getAuthHeader(): Promise<Record<string, string>> {
-  // Only access Firebase Auth on client side
+async function getAuthHeader(forceRefresh = false): Promise<Record<string, string>> {
   if (typeof window === "undefined") return {};
   const user = getFirebaseAuth().currentUser;
-  if (user) {
-    const token = await user.getIdToken();
-    return { Authorization: `Bearer ${token}` };
-  }
-  // Fallback to API key (for settings/health check before login)
-  const apiKey =
-    typeof window !== "undefined"
-      ? localStorage.getItem("api_key") || process.env.NEXT_PUBLIC_API_KEY || ""
-      : process.env.NEXT_PUBLIC_API_KEY || "";
-  if (apiKey) {
-    return { "X-API-Key": apiKey };
-  }
-  return {};
+  if (!user) return {};
+  const token = await user.getIdToken(forceRefresh);
+  return { Authorization: `Bearer ${token}` };
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const apiUrl = getApiUrl();
   const url = `${apiUrl}${path}`;
-  const authHeader = await getAuthHeader();
-  const headers: Record<string, string> = {
-    ...authHeader,
-    ...((options.headers as Record<string, string>) || {}),
-  };
-
-  const res = await fetch(url, { ...options, headers });
+  const res = await fetchWithAuthRefresh(url, options);
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");

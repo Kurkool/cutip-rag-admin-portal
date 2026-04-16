@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Loader2, DollarSign, Cpu, Search, Eye } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
+import { RoleGate } from "@/components/role-gate";
 import { StatsCard } from "@/components/stats-card";
 import {
   Card,
@@ -25,8 +24,14 @@ import { getAllUsage } from "@/lib/api";
 import type { UsageStats } from "@/lib/types";
 
 export default function BillingPage() {
-  const { adminUser } = useAuth();
-  const router = useRouter();
+  return (
+    <RoleGate role="super_admin">
+      <BillingContent />
+    </RoleGate>
+  );
+}
+
+function BillingContent() {
   const [usages, setUsages] = useState<UsageStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,11 +44,6 @@ export default function BillingPage() {
       )
       .finally(() => setLoading(false));
   }, []);
-
-  if (adminUser?.role !== "super_admin") {
-    router.replace("/");
-    return null;
-  }
 
   if (loading) {
     return (

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import { RoleGate } from "@/components/role-gate";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,12 +19,17 @@ import {
   approveRegistration,
   rejectRegistration,
 } from "@/lib/api";
-import { useAuth } from "@/lib/auth-context";
 import type { Registration } from "@/lib/types";
 
 export default function RegistrationsPage() {
-  const { adminUser } = useAuth();
-  const router = useRouter();
+  return (
+    <RoleGate role="super_admin">
+      <RegistrationsContent />
+    </RoleGate>
+  );
+}
+
+function RegistrationsContent() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -73,11 +78,6 @@ export default function RegistrationsPage() {
     } finally {
       setActionLoading(null);
     }
-  }
-
-  if (adminUser?.role !== "super_admin") {
-    router.replace("/");
-    return null;
   }
 
   if (loading) {
@@ -130,7 +130,7 @@ export default function RegistrationsPage() {
                   </p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Submitted: {new Date(reg.created_at).toLocaleString("th-TH")}
+                  Submitted: {formatSubmitted(reg.created_at)}
                 </p>
 
                 {rejectingId === reg.id ? (
@@ -201,4 +201,10 @@ export default function RegistrationsPage() {
       )}
     </div>
   );
+}
+
+function formatSubmitted(iso: string | null | undefined): string {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? "—" : d.toLocaleString("th-TH");
 }
