@@ -99,14 +99,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const cred = await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
       await fetchAdminProfile(cred.user);
-    } catch (err: any) {
-      const code = err?.code || "";
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code ?? "";
       if (code === "auth/invalid-credential" || code === "auth/user-not-found") {
         setError("Invalid email or password");
       } else if (code === "auth/too-many-requests") {
         setError("Too many attempts. Try again later.");
       } else {
-        setError(err?.message || "Login failed");
+        setError(err instanceof Error ? err.message : "Login failed");
       }
       throw err;
     } finally {
