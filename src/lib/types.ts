@@ -40,6 +40,8 @@ export interface Tenant {
   line_destination: string;
   pinecone_namespace: string;
   persona: string;
+  drive_folder_id: string;
+  drive_folder_name: string;
   is_active: boolean;
   created_at: string | null;
   updated_at: string | null;
@@ -65,6 +67,10 @@ export interface UpdateTenant {
   persona?: string;
   is_active?: boolean;
 }
+
+// UpdateTenant already has pinecone_namespace optional — admin portal now
+// allows editing it (see tenants/[id]/page.tsx). When changed, backend bumps
+// bm25_invalidate_ts so chat-api re-warms against the new namespace.
 
 export interface DocumentStats {
   tenant_id: string;

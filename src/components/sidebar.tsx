@@ -40,7 +40,7 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex items-center gap-2 border-b px-6 py-4">
         <Bot className="h-6 w-6 text-primary" />
-        <span className="text-lg font-bold">CU TIP RAG</span>
+        <span className="text-lg font-bold">VIRIYA</span>
       </div>
 
       {/* Navigation */}

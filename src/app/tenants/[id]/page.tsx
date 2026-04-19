@@ -44,6 +44,7 @@ export default function TenantDetailPage() {
       await updateTenant(tenantId, {
         faculty_name: form.get("faculty_name")?.toString() ?? "",
         line_destination: form.get("line_destination")?.toString() ?? "",
+        pinecone_namespace: form.get("pinecone_namespace")?.toString() ?? "",
         persona: form.get("persona")?.toString() ?? "",
         is_active: form.get("is_active") === "on",
       });
@@ -116,9 +117,19 @@ export default function TenantDetailPage() {
               <Input id="line_destination" name="line_destination" defaultValue={tenant.line_destination} />
             </div>
             <div>
-              <Label>Namespace</Label>
-              <Input value={tenant.pinecone_namespace} disabled aria-label="Pinecone namespace" />
-              <p className="mt-1 text-xs text-muted-foreground">Cannot be changed (linked to Pinecone index)</p>
+              <Label htmlFor="pinecone_namespace">Pinecone Namespace</Label>
+              <Input
+                id="pinecone_namespace"
+                name="pinecone_namespace"
+                defaultValue={tenant.pinecone_namespace}
+                pattern="[a-z0-9_-]+"
+                required
+              />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Changing this switches to a different Pinecone namespace. Existing vectors
+                stay in the old namespace (not migrated). BM25 cache re-warms on next query.
+                Use for v1↔v2 audit swaps or tenant migration.
+              </p>
             </div>
             <div>
               <Label htmlFor="persona">AI Persona</Label>

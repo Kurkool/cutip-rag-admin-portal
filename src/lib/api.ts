@@ -13,7 +13,6 @@ import type {
   Registration,
   RegistrationRequest,
   RejectResult,
-  SpreadsheetResult,
   Tenant,
   UpdateTenant,
   UpdateUser,
@@ -148,11 +147,28 @@ export async function getDocuments(tenantId: string): Promise<DocumentStats> {
   return request(`/api/tenants/${tenantId}/documents`);
 }
 
-export async function deleteDocuments(tenantId: string): Promise<void> {
+export async function deleteDocuments(
+  tenantId: string,
+): Promise<{ drive_deleted: number; drive_errors: string[] }> {
   return request(`/api/tenants/${tenantId}/documents`, { method: "DELETE" });
 }
 
-export async function ingestDocument(
+export async function deleteDocument(
+  tenantId: string,
+  filename: string,
+): Promise<{
+  filename: string;
+  vectors_deleted: number;
+  drive_removed: boolean;
+  drive_error: string | null;
+}> {
+  return request(
+    `/api/tenants/${tenantId}/documents/${encodeURIComponent(filename)}`,
+    { method: "DELETE" },
+  );
+}
+
+export async function stageUpload(
   tenantId: string,
   file: File,
   category: string = "general"
@@ -160,35 +176,21 @@ export async function ingestDocument(
   const form = new FormData();
   form.append("file", file);
   form.append("doc_category", category);
-  return ingestRequest(`/api/tenants/${tenantId}/ingest/document`, {
+  return ingestRequest(`/api/tenants/${tenantId}/ingest/stage`, {
     method: "POST",
     body: form,
   });
 }
 
-export async function ingestSpreadsheet(
-  tenantId: string,
-  file: File,
-  category: string = "general"
-): Promise<SpreadsheetResult> {
-  const form = new FormData();
-  form.append("file", file);
-  form.append("doc_category", category);
-  return ingestRequest(`/api/tenants/${tenantId}/ingest/spreadsheet`, {
-    method: "POST",
-    body: form,
-  });
-}
-
-export async function ingestGDrive(
+export async function connectDrive(
   tenantId: string,
   folderId: string,
-  category: string = "general"
-): Promise<GDriveResult> {
-  return ingestRequest(`/api/tenants/${tenantId}/ingest/gdrive`, {
+  folderName: string,
+): Promise<Tenant> {
+  return request(`/api/tenants/${tenantId}/gdrive/connect`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ folder_id: folderId, doc_category: category }),
+    body: JSON.stringify({ folder_id: folderId, folder_name: folderName }),
   });
 }
 
