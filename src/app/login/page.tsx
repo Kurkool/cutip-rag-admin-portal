@@ -43,8 +43,8 @@ export default function LoginPage() {
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
             <Bot className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="text-xl">CU TIP RAG Admin</CardTitle>
-          <CardDescription>Sign in to manage your RAG chatbot</CardDescription>
+          <CardTitle className="text-xl">VIRIYA — Admin</CardTitle>
+          <CardDescription>วิริยะ · Sign in to manage your RAG chatbot</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

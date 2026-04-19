@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "./providers";
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CU TIP RAG Admin",
-  description: "Admin Portal for Multi-Tenant RAG Chatbot",
+  title: "VIRIYA — Admin",
+  description: "VIRIYA (วิริยะ) — Admin Portal for Multi-Tenant RAG Chatbot",
 };
 
 export default function RootLayout({
@@ -32,6 +33,9 @@ export default function RootLayout({
       <body className="h-full">
         <Providers>{children}</Providers>
         <Toaster />
+        {/* Google Identity Services + Picker — used by the Drive Connect flow */}
+        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
+        <Script src="https://apis.google.com/js/api.js" strategy="afterInteractive" />
       </body>
     </html>
   );
