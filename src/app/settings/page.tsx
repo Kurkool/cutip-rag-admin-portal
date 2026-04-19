@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,16 +12,15 @@ import { toast } from "sonner";
 
 export default function SettingsPage() {
   const { adminUser } = useAuth();
-  const [apiUrl, setApiUrl] = useState("");
-  const [status, setStatus] = useState<string | null>(null);
-
-  useEffect(() => {
-    setApiUrl(
+  const [apiUrl, setApiUrl] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return (
       localStorage.getItem("api_url") ||
-        process.env.NEXT_PUBLIC_API_URL ||
-        ""
+      process.env.NEXT_PUBLIC_API_URL ||
+      ""
     );
-  }, []);
+  });
+  const [status, setStatus] = useState<string | null>(null);
 
   function handleSave() {
     localStorage.setItem("api_url", apiUrl);
