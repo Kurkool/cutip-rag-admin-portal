@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Bot, Loader2, CheckCircle } from "lucide-react";
+import { Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -72,8 +72,9 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Bot className="h-6 w-6 text-primary" />
+          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo/viriya-icon-mark.svg" alt="VIRIYA" className="h-8 w-8" />
           </div>
           <CardTitle className="text-xl">Register Faculty</CardTitle>
           <CardDescription>

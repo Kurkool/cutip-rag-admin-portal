@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Users,
   Settings,
-  Bot,
   LogOut,
   ShieldCheck,
   ClipboardList,
@@ -39,8 +38,9 @@ export function Sidebar() {
     <aside className="flex h-screen w-64 flex-col border-r bg-card">
       {/* Logo */}
       <div className="flex items-center gap-2 border-b px-6 py-4">
-        <Bot className="h-6 w-6 text-primary" />
-        <span className="text-lg font-bold">VIRIYA</span>
+        {/* eslint-disable-next-line @next/next/no-img-element -- SVG doesn't benefit from Image optimization */}
+        <img src="/logo/viriya-icon-mark.svg" alt="VIRIYA" className="h-7 w-7" />
+        <span className="text-lg font-bold tracking-wide">VIRIYA</span>
       </div>
 
       {/* Navigation */}
