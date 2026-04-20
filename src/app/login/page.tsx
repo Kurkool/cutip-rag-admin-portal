@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Bot, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -40,8 +40,9 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Bot className="h-6 w-6 text-primary" />
+          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo/viriya-icon-mark.svg" alt="VIRIYA" className="h-8 w-8" />
           </div>
           <CardTitle className="text-xl">VIRIYA — Admin</CardTitle>
           <CardDescription>วิริยะ · Sign in to manage your RAG chatbot</CardDescription>
