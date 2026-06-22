@@ -40,6 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# AI-assistant dev notes moved to private is-docs repo
 CLAUDE.md
 AGENTS.md
